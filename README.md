@@ -79,7 +79,7 @@ return 0;
 - Click on "Load" toolbar button to flash this firmware
 - The green LED should start blinking
 - Open device manager, look up what COM port device corresponds to your board
-- Start cmd.exe and type there `type COMPORT`, e.g. `type COM3` to see serial output
+- Start putty, and open a serial port with baud 115200
 - You should see messages like this:
   ```
   hi! tick is 1559001
@@ -87,3 +87,24 @@ return 0;
   hi! tick is 1560001
   ```
 - Congratulations! We have minimal skeleton firmware working
+
+## Integrate Mongoose Library
+
+
+**Step 1. Enable Mongoose Library.** Click on "Manage Run-Time Environment",
+and enable "Network Library" / "Mongoose"  
+
+**Step 2. Configure Mongoose Library.** In the project view, click on
+"Network Library" / `mongoose_custom.h`. Click on the "Configuration Wizard"
+tab and make sure the following options are set:
+- Build environment - Keil MDK
+- Built-in TCP/IP stack - enabled
+- Enable STM32Fxx driver - enabled
+- TLS support - none
+- Enable custom `mg_millis()` - enabled
+- Enable custom `mg_random()` - enabled
+- Enable packed filesystem - disabled
+
+**Step 3. Add mongoose header.** Open `main.c`, add `#include "mongoose.h"` at
+the top, remove `mg_millis()` declaration. Click on build to make sure the
+project builds.

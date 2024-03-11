@@ -105,6 +105,29 @@ tab and make sure the following options are set:
 - Enable custom `mg_random()` - enabled
 - Enable packed filesystem - disabled
 
-**Step 3. Add mongoose header.** Open `main.c`, add `#include "mongoose.h"` at
-the top, remove `mg_millis()` declaration. Click on build to make sure the
-project builds.
+Add this snippet to generate stable (not random) MAC address
+```c
+#include <stm32f756xx.h>
+#define MG_MAC_ADDRESS MG_MAC_ADDRESS_STM32_UID(UID_BASE)
+```
+
+**Step 3. Initialise Mongoose Library.** Open `main.c`, copy-paste the following:
+```c
+#include "hal.h"
+#include "mongoose.h"
+
+static void run_mongoose(void) {
+	struct mg_mgr mgr;
+	mg_mgr_init(&mgr);        // Initialise it
+  mg_log_set(MG_LL_DEBUG);  // Set log level to debug
+	for (;;) {
+		mg_mgr_poll(&mgr, 0);
+	}
+}
+
+int main(void) {
+	hal_init();
+	run_mongoose();
+	return 0;
+}
+```

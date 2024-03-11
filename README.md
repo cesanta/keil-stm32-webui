@@ -116,18 +116,19 @@ Add this snippet to generate stable (not random) MAC address
 #include "hal.h"
 #include "mongoose.h"
 
+// In RTOS environment, run this function in a separate task with 8k stack
 static void run_mongoose(void) {
-	struct mg_mgr mgr;
-	mg_mgr_init(&mgr);        // Initialise it
+  struct mg_mgr mgr;        // Mongoose Event Mangager
+  mg_mgr_init(&mgr);        // Initialise Event Manager
   mg_log_set(MG_LL_DEBUG);  // Set log level to debug
-	for (;;) {
-		mg_mgr_poll(&mgr, 0);
-	}
+  for (;;) {                // Run infinite event loop
+    mg_mgr_poll(&mgr, 0);   // Process network events
+  }
 }
 
 int main(void) {
-	hal_init();
-	run_mongoose();
-	return 0;
+  hal_init();
+  run_mongoose();
+  return 0;
 }
 ```
